@@ -24,7 +24,7 @@ How many total feet of ribbon should they order?
 
 =end
 
-file = File.open("day_2_input")
+file = File.open("day2_input")
 
 total_paper = 0
 total_ribbon = 0

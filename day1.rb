@@ -33,7 +33,7 @@ What is the position of the character that causes Santa to first enter the basem
 
 =end
 
-file = File.open("day_1_input")
+file = File.open("day1_input")
 
 floor = 0
 position = 0
