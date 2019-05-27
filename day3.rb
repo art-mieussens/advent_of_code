@@ -54,7 +54,7 @@ puts visited_houses.length
 santa_position = [0,0]
 robot_position = [0,0]
 visited_houses_part2 = { santa_position.hash => true , robot_position.hash => true}
-# Had to use hashes as the arrays were not being as unique and  there were duplicate entries in the hash
+# Had to use hashes as the arrays were not being seen as unique and there were duplicate entries in the hash
 
 turn = :santa
 
@@ -95,12 +95,6 @@ file_again.each_char do |c|
     visited_houses_part2[robot_position.hash] = true
     turn = :santa
   end
-
-  # puts turn
-  # puts c
-  # puts santa_position[0], santa_position[1]
-  # puts robot_position[0], robot_position[1]
-  # puts visited_houses_part2.length
 
 end
 
