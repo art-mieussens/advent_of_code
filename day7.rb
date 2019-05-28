@@ -10,9 +10,9 @@ For example:
 
 123 -> x means that the signal 123 is provided to wire x.
 x AND y -> z means that the bitwise AND of wire x and wire y is provided to wire z.
-p LSHIFT 2 -> q means that the value from wire p is left-shifted by 2 and then provided to wire q.
+p LSHIFT 2 -> q means that the value from wire p is from-shifted by 2 and then provided to wire q.
 NOT e -> f means that the bitwise complement of the value from wire e is provided to wire f.
-Other possible gates include OR (bitwise OR) and RSHIFT (right-shift). If, for some reason, you'd like to emulate the circuit instead, almost all programming languages (for example, C, JavaScript, or Python) provide operators for these gates.
+Other possible gates include OR (bitwise OR) and RSHIFT (to-shift). If, for some reason, you'd like to emulate the circuit instead, almost all programming languages (for example, C, JavaScript, or Python) provide operators for these gates.
 
 For example, here is a simple circuit:
 
@@ -41,47 +41,59 @@ $substitution_table = {}
 
 def make_substitution_table(file)
   file.each_line do |l|
-    left, right = l.strip.split(' -> ')
-    left_expr = left.split(' ')
-    case left_expr[0]
-    when /^\d+$/ #series of digits
-      $substitution_table[right] = [":", left_expr[0].to_i]
+    from, to = l.strip.split(' -> ') #Get both sides of the rule 
+    from_arr = from.split(' ') #Get array of left side expression
+    case from_arr[0]
+    when /^\d+$/ #(series of digits)
+      $substitution_table[to] = ["INT", from_arr[0]]
     when "NOT"
-      $substitution_table[right] = ["NOT", left_expr[1]]
-    when /^[a-z]+$/ #series of lower case letters
-      case left_expr[1]
+      $substitution_table[to] = ["NOT", from_arr[1]]
+    when /^[a-z]+$/ #(series of lower case letters)
+      case from_arr[1]
       when nil
-        $substitution_table[right] = ["==", left_expr[0]]
+        $substitution_table[to] = ["EQU", from_arr[0]]
       when "AND"
-        $substitution_table[right] = ["AND", left_expr[0], left_expr[2]]
+        $substitution_table[to] = ["AND", from_arr[0], from_arr[2]]
       when "OR"
-        $substitution_table[right] = ["OR", left_expr[0], left_expr[2]]
+        $substitution_table[to] = ["OR", from_arr[0], from_arr[2]]
       when "LSHIFT"
-        $substitution_table[right] = ["LSHIFT", left_expr[0], left_expr[2]]
+        $substitution_table[to] = ["LSHIFT", from_arr[0], from_arr[2]]
       when "RSHIFT"
-        $substitution_table[right] = ["RSHIFT", left_expr[0], left_expr[2]]
+        $substitution_table[to] = ["RSHIFT", from_arr[0], from_arr[2]]
       end
     end
   end
 end
 
 def evaluate(val)
-  rule = $substitution_table[val]
-  case rule[0]
-  when ":"
-    rule[1]
-  when "=="
-    evaluate(rule[1])
-  when "NOT"
-    ~(evaluate(rule[1]))
-  when "AND"
-    evaluate(rule[1]) & evaluate(rule[2])
-  when "OR"
-    evaluate(rule[1]) | evaluate(rule[2])
-  when "LSHIFT"
-    evaluate(rule[1]) << evaluate(rule[2])
-  when "RSHIFT"
-    evaluate(rule[1]) >> evaluate(rule[2])
+  pp val
+  case val
+  when nil
+    puts "Error, trying to evaluate nil!"
+  when Integer
+    return val
+  when /^\d+$/ #(series of digits)
+    return val.to_i
+  when /^[a-z]+$/ #(series of lower case letters)
+    return evaluate($substitution_table[val])
+  when Array
+    case val[0]
+    when "INT"
+      expr = val[1].to_i
+    when "EQU"
+      expr = evaluate(val[1])
+    when "NOT"
+      expr = ~(evaluate(val[1]))
+    when "AND"
+      expr = evaluate(val[1]) & evaluate(val[2])
+    when "OR"
+      expr = evaluate(val[1]) | evaluate(val[2])
+    when "LSHIFT"
+      expr = evaluate(val[1]) << evaluate(val[2])
+    when "RSHIFT"
+      expr = evaluate(val[1]) >> evaluate(val[2])
+    end
+    return expr
   end
 end
 
@@ -94,25 +106,25 @@ puts evaluate('a')
 
 # def make_substitution_table(file)
 #   file.each_line do |l|
-#     left, right = l.strip.split(' -> ')
-#     left_expr = left.split(' ')
-#     case left_expr[0]
+#     from, to = l.strip.split(' -> ')
+#     from_arr = from.split(' ')
+#     case from_arr[0]
 #     when /^\d+$/ #series of digits
-#       $substitution_table << [right, left_expr[0]]
+#       $substitution_table << [to, from_arr[0]]
 #     when "NOT"
-#       $substitution_table << [right, "( ~#{left_expr[1]} )"]
+#       $substitution_table << [to, "( ~#{from_arr[1]} )"]
 #     when /^[a-z]+$/ #series of lower case letters
-#       case left_expr[1]
+#       case from_arr[1]
 #       when nil
-#         $substitution_table << [right, " #{left_expr[0]} "]
+#         $substitution_table << [to, " #{from_arr[0]} "]
 #       when "AND"
-#         $substitution_table << [right, "( #{left_expr[0]} & #{left_expr[2]} )"]
+#         $substitution_table << [to, "( #{from_arr[0]} & #{from_arr[2]} )"]
 #       when "OR"
-#         $substitution_table << [right, "( #{left_expr[0]} | #{left_expr[2]} )"]
+#         $substitution_table << [to, "( #{from_arr[0]} | #{from_arr[2]} )"]
 #       when "LSHIFT"
-#         $substitution_table << [right, "( #{left_expr[0]} << #{left_expr[2]} )"]
+#         $substitution_table << [to, "( #{from_arr[0]} << #{from_arr[2]} )"]
 #       when "RSHIFT"
-#         $substitution_table << [right, "( #{left_expr[0]} >> #{left_expr[2]} )"]
+#         $substitution_table << [to, "( #{from_arr[0]} >> #{from_arr[2]} )"]
 #       end
 #     end
 #   end
