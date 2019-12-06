@@ -25,35 +25,35 @@ def leg_value(leg)
 end
 
 def path_to_slist(path)
-  x = 0
-  y = 1
-  list = []
-  position = [0,0]
-  new_position = [0,0]
 
-  def new_segment
+  def new_segment(p1, p2)
     [
-      [ position[x], position[y] ],
-      [ new_position[x], new_position [y] ]
+      [ p1[0], p1[1] ],
+      [ p2[0], p2[1] ]
     ]
+  end
+
+  list = []
+  position = new_position = [0,0]
 
   path.each do |leg|
     case leg_direction(leg)
-    when 'u'
-      new_position[x] = position[x] + leg_value(leg) 
-      list << new_segment
-    when 'd'
-      new_position[x] = position[x] + leg_value(leg) 
-      list << new_segment
-    when 'r'
-      new_position[x] = position[x] + leg_value(leg) 
-      list << new_segment
-    when 'l'
-      new_position[x] = position[x] + leg_value(leg) 
-      list << new_segment
+    when 'U'
+      new_position[1] = position[1] + leg_value(leg) 
+    when 'D'
+      new_position[1] = position[1] - leg_value(leg) 
+    when 'R'
+      new_position[0] = position[0] + leg_value(leg) 
+    when 'L'
+      new_position[0] = position[0] - leg_value(leg) 
     end
-    list
+    p position
+    p new_position
+    list << new_segment(position, new_position)
+    position = new_position
   end
+
+  list
 end
 
-p list1 = path_to_slist(path1)
+list1 = path_to_slist(path1)
