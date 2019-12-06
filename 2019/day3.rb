@@ -13,9 +13,6 @@ path2 = str2.split(',')
 #  ...
 #]
 
-list1 = []
-list2 = []
-
 def leg_direction(leg)
   leg[0] 
 end
@@ -34,7 +31,8 @@ def path_to_slist(path)
   end
 
   list = []
-  position = new_position = [0,0]
+  position = [0,0]
+  new_position = [0,0]
 
   path.each do |leg|
     case leg_direction(leg)
@@ -47,13 +45,14 @@ def path_to_slist(path)
     when 'L'
       new_position[0] = position[0] - leg_value(leg) 
     end
-    p position
-    p new_position
     list << new_segment(position, new_position)
-    position = new_position
+    position = new_position.dup
   end
-
   list
 end
 
-list1 = path_to_slist(path1)
+p list1 = path_to_slist(path1)
+p list2 = path_to_slist(path2)
+
+
+
