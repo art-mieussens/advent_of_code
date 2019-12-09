@@ -51,8 +51,22 @@ def path_to_slist(path)
   list
 end
 
-p list1 = path_to_slist(path1)
-p list2 = path_to_slist(path2)
+list1 = path_to_slist(path1)
+list2 = path_to_slist(path2)
 
+def horizontal?(vector)
+  # vector is horizontal if y coord is the same at both ends
+  vector[0][1] == vector[1][1]
+end
 
+def vertical?(vector)
+  # vector is vertical if x coord is the same at both ends 
+  vector[0][0] == vector[1][0]
+end
+
+list1h = list1.filter {|v| horizontal?(v)} 
+list1v = list1.filter {|v| vertical?(v)} 
+
+list2h = list2.filter {|v| horizontal?(v) }
+p list2v = list2.filter {|v| vertical?(v) }
 
