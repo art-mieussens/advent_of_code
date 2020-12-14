@@ -1,7 +1,7 @@
 expenses = []
 
-File.open("input.txt").each do |line|
-    expenses << line.to_i
+File.open('input.txt').each do |line|
+  expenses << line.to_i
 end
 
 expenses.sort!
@@ -27,18 +27,18 @@ first = 0
 second = 0
 third = 0
 
-expenses.each_with_index do |a,i|
-    expenses.each_with_index do |b,j|
-        expenses.each_with_index do |c,k|
-            if a + b + c == 2020
-                first = a
-                second = b
-                third = c
-                result = a * b * c
-                break
-            end
-        end
+expenses.each_with_index do |a, _i|
+  expenses.each_with_index do |b, _j|
+    expenses.each_with_index do |c, _k|
+      next unless a + b + c == 2020
+
+      first = a
+      second = b
+      third = c
+      result = a * b * c
+      break
     end
+  end
 end
 
 puts first
