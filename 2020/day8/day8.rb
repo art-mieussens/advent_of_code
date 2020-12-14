@@ -1,8 +1,17 @@
 class Program
 
-    def initialize(input)
+    attr_accessor :program, :accumulator
+
+    def initialize(input, chg_line)
         @program = []
-        File.open(input).each_line do |line|
+        File.open(input).each_with_index do |line, i|
+            if i+1 == chg_line
+                puts i+1
+                puts line
+                line.sub!(/^(nop|jmp)/, {"nop" => "jmp", "jmp" => "nop"})
+                puts line
+                puts "--"
+            end 
             @program << line
         end
         @accumulator = 0
@@ -12,9 +21,6 @@ class Program
     def run
         instructions_ran = {}
         until instructions_ran[@index] do
-            puts "----"
-            puts "index: #{@index}"
-            puts "instruction: #{@program[@index]}"
             instructions_ran[@index] = true
             par = @program[@index].match(/^....((?:\+|-)\d+)/)[1].to_i
             case @program[@index].match(/^(...)/)[1]
@@ -26,18 +32,22 @@ class Program
             when "jmp"
                 @index += par
             end
+            if @index == @program.length
+                return "ok"
+            end
         end
-        puts "===="
-        puts "index: #{@index}"
-        puts "accumulator: #{@accumulator}"
-        puts "===="
-        if @index == @program.length + 1
-            return "program ended"
-        else
-            return "program halted"
-        end
+        return "halted"
     end
 end
 
-p = Program.new("input.txt")
-p.run
+(0..635).each do |chg_line|
+    p = Program.new("input.txt", chg_line)
+    r = p.run
+    puts r
+    if r == "ok"
+        puts "changed_line: #{chg_line}"
+        puts "accumulator: #{p.accumulator}"
+        break
+    end 
+end
+
