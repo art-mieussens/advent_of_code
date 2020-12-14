@@ -1,9 +1,9 @@
 def tree?(line, pos)
-  line[pos % (line.length - 1)] == "#"
+  line[pos % (line.length - 1)] == '#'
 end
 
 def count_trees(right, down)
-  f = File.open("input.txt")
+  f = File.open('input.txt')
 
   sum = 0
   x_pos = 0
@@ -19,4 +19,4 @@ def count_trees(right, down)
   puts "slope: #{right}, #{down} - #{sum}"
 end
 
-[[1,1],[3,1],[5,1],[7,1],[1,2]].each {|n| count_trees(n[0],n[1])} 
+[[1, 1], [3, 1], [5, 1], [7, 1], [1, 2]].each { |n| count_trees(n[0], n[1]) }
